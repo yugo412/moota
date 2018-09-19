@@ -23,6 +23,31 @@ Tambahkan package Moota untuk Laravel dengan menjalankan perintah berikut:
 ```
 composer require yugo/moota -vvv
 ```
+
+Laravel memiliki fitur (Package Discovery)[https://laravel.com/docs/5.7/packages#package-discovery], yang memungkinkan package didaftarkan secara otomatis. Jika kamu mendapati pesan kesalagan class Moota tidak ditemukan, daftarkan provider dan facade Moota secara manual pada berkas `config/app.php`.
+
+```
+/*
+* Package Service Providers...
+*/
+Yugo\Moota\Providers\MootaServiceProvider::class,
+```
+
+Tambahkan juga alias facade Moota jika diperlukan.
+
+```
+/*
+|--------------------------------------------------------------------------
+| Class Aliases
+|--------------------------------------------------------------------------
+|
+| This array of class aliases will be registered when this application
+| is started. However, feel free to register as many as you wish as
+| the aliases are "lazy" loaded so they don't hinder performance.
+|
+*/
+`Moota` => Yugo\Moota\Facades\Moota::class,
+```
  
 Pada berkas `.env`, tambahkan konfigurasi baru dengan nama seperti berikut:  
 
@@ -37,7 +62,7 @@ Konfigurasi `MOOTA_HOST` bersifat opsional dan otomatis akan menggunakan endpoin
 
 ## Penggunaan  
 
-Setelah package berhasil diiinstal, impor facade Moota terlebih dahulu.  
+Setelah package berhasil diinstal, impor facade Moota terlebih dahulu.  
 
 ```
 use Yugo\Moota\Facades\Moota;

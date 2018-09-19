@@ -22,7 +22,10 @@
         "laravel": {
             "providers": [
                 "Yugo\\Moota\\Providers\\MootaServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Moota": "Yugo\\Mota\\Facades\\Mota"
+            }
         }
     },
     "require": {

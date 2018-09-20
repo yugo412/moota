@@ -15,7 +15,10 @@
 namespace Yugo\Moota\Libraries;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\TransferStats;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class Moota
 {
@@ -77,6 +80,26 @@ class Moota
     }
 
     /**
+     * Parse response from Guzzle, check status code, and return the value.
+     *
+     * @param Response $response
+     * @return Collection
+     */
+    public function response(Response $response, string $url): Collection
+    {
+        $body = json_decode((string) $response->getBody());
+
+        if (!empty($body->status) and $body->status === 'error') {
+            Log::error(sprintf('Moota HTTP response: %s', $body->message), [
+                'url' => $url,
+                'headers' => $this->headers,
+            ]);
+        }
+
+        return collect($body);
+    }
+
+    /**
      * Get registered profile based on provided token.
      *
      * @link https://app.moota.co/developer/docs#menampilkan-profil
@@ -86,9 +109,12 @@ class Moota
     {
         $response = $this->http->get('profile', [
             'headers' => $this->headers,
+            'on_stats' => function (TransferStats $stats) use (&$url) {
+                $url = $stats->getEffectiveUri();
+            },
         ]);
 
-        return collect(json_decode((string) $response->getBody()));
+        return $this->response($response, $url);
     }
 
     /**
@@ -101,9 +127,12 @@ class Moota
     {
         $response = $this->http->get('balance', [
             'headers' => $this->headers,
+            'on_stats' => function (TransferStats $stats) use (&$url) {
+                $url = $stats->getEffectiveUri();
+            },
         ]);
 
-        return collect(json_decode((string) $response->getBody()));
+        return $this->response($response, $url);
     }
 
     /**
@@ -116,9 +145,12 @@ class Moota
     {
         $response = $this->http->get('bank', [
             'headers' => $this->headers,
+            'on_stats' => function (TransferStats $stats) use (&$url) {
+                $url = $stats->getEffectiveUri();
+            },
         ]);
 
-        return collect(json_decode((string) $response->getBody()));
+        return $this->response($response, $url);
     }
 
     /**
@@ -132,20 +164,24 @@ class Moota
     {
         $response = $this->http->get("bank/{$bankId}", [
             'headers' => $this->headers,
+            'on_stats' => function (TransferStats $stats) use (&$url) {
+                $url = $stats->getEffectiveUri();
+            },
         ]);
 
-        return collect(json_decode((string) $response->getBody()));
+        return $this->response($response, $url);
     }
 
     /**
      * Prepare to get muation from single bank.
      *
      * @param string $bankId
-     * @return Collection
+     * @return self
      */
-    public function mutation(string $bankId): Collection
+    public function mutation(string $bankId): self
     {
         $this->bankId = $bankId;
+
         return $this;
     }
 
@@ -159,9 +195,12 @@ class Moota
     {
         $response = $this->http->get("bank/{$this->bankId}/mutation", [
             'headers' => $this->headers,
+            'on_stats' => function (TransferStats $stats) use (&$url) {
+                $url = $stats->getEffectiveUri();
+            },
         ]);
 
-        return collect(json_decode((string) $response->getBody()));
+        return $this->response($response, $url);
     }
 
     /**
@@ -178,9 +217,12 @@ class Moota
 
         $response = $this->http->get("bank/{$this->bankId}/mutation/recent/$limit", [
             'headers' => $this->headers,
+            'on_stats' => function (TransferStats $stats) use (&$url) {
+                $url = $stats->getEffectiveUri();
+            },
         ]);
 
-        return collect(json_decode((string) $response->getBody()));
+        return $this->response($response, $url);
     }
 
     /**
@@ -194,9 +236,12 @@ class Moota
     {
         $response = $this->http->get("bank/{$this->bankId}/mutation/search/{$amount}", [
             'headers' => $this->headers,
+            'on_stats' => function (TransferStats $stats) use (&$url) {
+                $url = $stats->getEffectiveUri();
+            },
         ]);
 
-        return collect(json_decode((string) $response->getBody()));
+        return $this->response($response, $url);
     }
 
     /**
@@ -210,8 +255,11 @@ class Moota
     {
         $response = $this->http->get("bank/{$this->bankId}/mutation/search/description/{$description}", [
             'headers' => $this->headers,
+            'on_stats' => function (TransferStats $stats) use (&$url) {
+                $url = $stats->getEffectiveUri();
+            },
         ]);
 
-        return collect(json_decode((string) $response->getBody()));
+        return $this->response($response, $url);
     }
 }

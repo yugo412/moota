@@ -20,6 +20,6 @@ return [
         /**
          * Max total request in second.
          */
-        'timeout' => env('MOOTA_API_TIMEMOUT', 30),
+        'timeout' => env('MOOTA_TIMEMOUT', 30),
     ],
 ];

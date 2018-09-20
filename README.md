@@ -130,7 +130,7 @@ Moota::mutation($bankId = 'XXX123')->amount(10000);
 Moota::mutation($bankId = 'XXX123')->description('Transfer dari...');
 ```  
 
-Semua nilai kembali (return) dari fungsi di atas berbentuk Collection Laravel. Format datanya sama persis dengan respons dari [API Moota.co](https://app.moota.co/developer/docs).
+Semua nilai kembali (return) dari fungsi di atas berbentuk [Collection Laravel](https://laravel.com/docs/5.7/collections). Format datanya sama persis dengan respons dari [API Moota.co](https://app.moota.co/developer/docs).
 
 Jika kamu ingin mengembalikan dalam bentuk array, cukup tambahkan method `toArray()` di akhir rantai penggunaan fungsi. Sebagai contoh:  
 

@@ -56,7 +56,7 @@ MOOTA_HOST="https://app.moota.co/api/v1/"
 MOOTA_TOKEN="token-kamu"
 ```  
 
-Token bisa didapatkan melalui menu berikut: [https://app.moota.co/settings?tab=api]().  
+Token bisa didapatkan melalui menu berikut: [https://app.moota.co/settings?tab=api](https://app.moota.co/settings?tab=api).  
 
 Konfigurasi `MOOTA_HOST` bersifat opsional dan otomatis akan menggunakan endpoint terbaru jika tidak tersedia dalam berkas `.env`.  
 

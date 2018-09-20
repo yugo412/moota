@@ -15,6 +15,11 @@ Repositori ini menyediakan package (tidak resmi) ditujukan pada framework Larave
 - Mutasi terakhir.
 - Pencarian mutasi berdasarkan nominal.
 - Pencarian mutasi berdasarkan deskripsi.
+
+## Kebutuhan Sistem
+
+- Laravel framework versi >= 5.2.
+- PHP versi >= 7.0. Beberapa kode menggunakan [return type declaration](http://php.net/manual/en/functions.returning-values.php#functions.returning-values.type-declaration) yang hanya tersedia di PHP 7.
  
 ## Instalasi
 

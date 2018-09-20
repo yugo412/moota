@@ -18,6 +18,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\TransferStats;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class Moota
@@ -57,6 +58,27 @@ class Moota
      */
     private $bankId = '';
 
+    /**
+     * Cache response data from API.
+     *
+     * @var boolean
+     */
+    private $cache = false;
+
+    /**
+     * Cahe time in minutes.
+     *
+     * @var integer
+     */
+    private $cacheTime = 60;
+
+    /**
+     * Default cache name for every method.
+     *
+     * @var string
+     */
+    private $cacheName = '';
+
     public function __construct()
     {
         abort_if(empty(config('moota.host')), 500, trans('moota::moota.no_host'));
@@ -85,7 +107,7 @@ class Moota
      * @param Response $response
      * @return Collection
      */
-    public function response(Response $response, string $url): Collection
+    private function response(Response $response, string $url): Collection
     {
         $body = json_decode((string) $response->getBody());
 
@@ -94,9 +116,27 @@ class Moota
                 'url' => $url,
                 'headers' => $this->httpHeaders,
             ]);
+        } else {
+            if ($this->cache === true and !empty($this->cacheName)) {
+                Cache::put($this->cacheName, collect($body), $this->cacheTime);
+            }
         }
 
         return collect($body);
+    }
+
+    /**
+     * Flag data to store in cache for x minute(s).
+     *
+     * @param integer $minutes
+     * @return self
+     */
+    public function cache(int $minutes = 60): self
+    {
+        $this->cache = true;
+        $this->cacheTime = $minutes;
+
+        return $this;
     }
 
     /**
@@ -107,6 +147,11 @@ class Moota
      */
     public function profile(): Collection
     {
+        $this->cacheName = 'moota.profile';
+        if ($this->cache === true and Cache::has($this->cacheName)) {
+            return Cache::get($this->cacheName);
+        }
+
         $response = $this->http->get('profile', [
             'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {
@@ -125,6 +170,11 @@ class Moota
      */
     public function balance(): Collection
     {
+        $this->cacheName = 'moota.balance';
+        if ($this->cache === true and Cache::has($this->cacheName)) {
+            return Cache::get($this->cacheName);
+        }
+
         $response = $this->http->get('balance', [
             'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {
@@ -143,6 +193,11 @@ class Moota
      */
     public function banks(): Collection
     {
+        $this->cacheName = 'moota.banks';
+        if ($this->cache === true and Cache::has($this->cacheName)) {
+            return Cache::get($this->cacheName);
+        }
+
         $response = $this->http->get('bank', [
             'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {
@@ -162,6 +217,11 @@ class Moota
      */
     public function bank(string $bankId): Collection
     {
+        $this->cacheName = 'moota.bank.' . $bankId;
+        if ($this->cache === true and Cache::has($this->cacheName)) {
+            return Cache::get($this->cacheName);
+        }
+
         $response = $this->http->get("bank/{$bankId}", [
             'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {
@@ -193,6 +253,11 @@ class Moota
      */
     public function month(): Collection
     {
+        $this->cacheName = 'moota.bank.mutation.month.' . $this->bankId;
+        if ($this->cache === true and Cache::has($this->cacheName)) {
+            return Cache::get($this->cacheName);
+        }
+
         $response = $this->http->get("bank/{$this->bankId}/mutation", [
             'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {
@@ -212,6 +277,11 @@ class Moota
      */
     public function latest(int $limit = 20): Collection
     {
+        $this->cacheName = 'moota.bank.mutation.latest.' . $this->bankId;
+        if ($this->cache === true and Cache::has($this->cacheName)) {
+            return Cache::get($this->cacheName);
+        }
+
         abort_if($limit < 10, 500, trans('moota::moota.min_limit'));
         abort_if($limit > 20, 500, trans('moota::moota.max_limit.'));
 
@@ -234,6 +304,10 @@ class Moota
      */
     public function amount(float $amount): Collection
     {
+        abort_if($this->cache === true, 500, trans('moota::moota.cache_no_supported', [
+            'method' => __FUNCTION__,
+        ]));
+
         $response = $this->http->get("bank/{$this->bankId}/mutation/search/{$amount}", [
             'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {
@@ -253,6 +327,10 @@ class Moota
      */
     public function description(string $description): Collection
     {
+        abort_if($this->cache === true, 500, trans('moota::moota.cache_no_supported', [
+            'method' => __FUNCTION__,
+        ]));
+        
         $response = $this->http->get("bank/{$this->bankId}/mutation/search/description/{$description}", [
             'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {

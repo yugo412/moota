@@ -6,10 +6,20 @@ return [
      * @link https://app.moota.co/developer/docs#base-url-dan-autentikasi
      */
     'host' => env('MOOTA_HOST', 'https://app.moota.co/api/v1/'),
-    
+
     /**
      * Provided token from Moota.
      * @link https://app.moota.co/settings?tab=api
      */
     'token' => env('MOOTA_TOKEN'),
+
+    /**
+     * HTTP request configurations.
+     */
+    'http' => [
+        /**
+         * Max total request in second.
+         */
+        'timeout' => env('MOOTA_API_TIMEMOUT', 30),
+    ],
 ];

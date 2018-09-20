@@ -4,10 +4,10 @@
  * ------------------------------------------------------------------------------------------------------
  * Unofficial Moota.co package for Laravel framework
  * ------------------------------------------------------------------------------------------------------
- * 
+ *
  * Moota.co adalah layanan untuk mengelola mutasi bank dalam satu dasbor dan cek transaksi secara otomatis.
  * Moota.co mendukung berbagai bank lokal seperti Mandiri, BCA, BNI, Bank Muamalat, dan Bank BRI.
- * 
+ *
  * Package (tidak resmi) ini ditujukan pada framework Laravel untuk kemudahan penggunaan layanan
  * yang disediakan oleh API Moota.co.
  */
@@ -41,6 +41,13 @@ class Moota
     private $httpError = false;
 
     /**
+     * Set default http timeout request.
+     *
+     * @var integer
+     */
+    private $httpTimeout = 30;
+
+    /**
      * Default bank id.
      *
      * @var string
@@ -48,13 +55,19 @@ class Moota
     private $bankId = '';
 
     public function __construct()
-    {        
+    {
         abort_if(empty(config('moota.host')), 500, trans('moota::moota.no_host'));
         abort_if(empty(config('moota.token')), 500, trans('moota::moota.no_token'));
+
+        // override default http timeout
+        if (!empty(config('moota.http.timeout')) and is_integer(config('moota.http.timeout'))) {
+            $this->httpTimeout = config('moota.http.timeout');
+        }
 
         $this->http = new Client([
             'base_uri' => config('moota.host'),
             'http_errors' => $this->httpError,
+            'timeout' => $this->httpTimeout,
         ]);
 
         $this->headers = [

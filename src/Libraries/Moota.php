@@ -34,7 +34,7 @@ class Moota
      *
      * @var array
      */
-    private $headers = [];
+    private $httpHeaders = [];
 
     /**
      * Show error HTTP from Guzzle client.
@@ -73,7 +73,7 @@ class Moota
             'timeout' => $this->httpTimeout,
         ]);
 
-        $this->headers = [
+        $this->httpHeaders = [
             'Authorization' => 'Bearer ' . config('moota.token'),
             'Accept' => 'application/json',
         ];
@@ -92,7 +92,7 @@ class Moota
         if (!empty($body->status) and $body->status === 'error') {
             Log::error(sprintf('Moota HTTP response: %s', $body->message), [
                 'url' => $url,
-                'headers' => $this->headers,
+                'headers' => $this->httpHeaders,
             ]);
         }
 
@@ -108,7 +108,7 @@ class Moota
     public function profile(): Collection
     {
         $response = $this->http->get('profile', [
-            'headers' => $this->headers,
+            'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {
                 $url = $stats->getEffectiveUri();
             },
@@ -126,7 +126,7 @@ class Moota
     public function balance(): Collection
     {
         $response = $this->http->get('balance', [
-            'headers' => $this->headers,
+            'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {
                 $url = $stats->getEffectiveUri();
             },
@@ -144,7 +144,7 @@ class Moota
     public function banks(): Collection
     {
         $response = $this->http->get('bank', [
-            'headers' => $this->headers,
+            'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {
                 $url = $stats->getEffectiveUri();
             },
@@ -163,7 +163,7 @@ class Moota
     public function bank(string $bankId): Collection
     {
         $response = $this->http->get("bank/{$bankId}", [
-            'headers' => $this->headers,
+            'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {
                 $url = $stats->getEffectiveUri();
             },
@@ -194,7 +194,7 @@ class Moota
     public function month(): Collection
     {
         $response = $this->http->get("bank/{$this->bankId}/mutation", [
-            'headers' => $this->headers,
+            'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {
                 $url = $stats->getEffectiveUri();
             },
@@ -216,7 +216,7 @@ class Moota
         abort_if($limit > 20, 500, trans('moota::moota.max_limit.'));
 
         $response = $this->http->get("bank/{$this->bankId}/mutation/recent/$limit", [
-            'headers' => $this->headers,
+            'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {
                 $url = $stats->getEffectiveUri();
             },
@@ -235,7 +235,7 @@ class Moota
     public function amount(float $amount): Collection
     {
         $response = $this->http->get("bank/{$this->bankId}/mutation/search/{$amount}", [
-            'headers' => $this->headers,
+            'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {
                 $url = $stats->getEffectiveUri();
             },
@@ -254,7 +254,7 @@ class Moota
     public function description(string $description): Collection
     {
         $response = $this->http->get("bank/{$this->bankId}/mutation/search/description/{$description}", [
-            'headers' => $this->headers,
+            'headers' => $this->httpHeaders,
             'on_stats' => function (TransferStats $stats) use (&$url) {
                 $url = $stats->getEffectiveUri();
             },

@@ -31,7 +31,7 @@ composer require yugo/moota -vvv
 
 Laravel memiliki fitur [Package Discovery](https://laravel.com/docs/5.7/packages#package-discovery), yang memungkinkan package didaftarkan secara otomatis. Sehingga kamu dapat menggunakan facade Moota tanpa harus meregistrasikannya pada config.
 
-Jika kamu mendapati pesan kesalagan class Moota tidak ditemukan, daftarkan provider dan facade Moota secara manual pada berkas `config/app.php`.
+Jika kamu mendapati pesan kesalahan class Moota tidak ditemukan, daftarkan provider dan facade Moota secara manual pada berkas `config/app.php`.
 
 ```
 /*
@@ -164,7 +164,7 @@ is_array(Moota::mutation($bankId)->month()->toArray()) // true
 
 ## Cache
 
-Beberapa metode yang tersedia di facade mendukung cache. Hal ini memungkinkan respons dari API di simpan pada cache di lokal server. Ketika fungsi yang sama dipanggil untuk kesekian kali, aplikasi tidak perlu memanggil secara langsung ke API Moota.
+Beberapa metode yang tersedia di facade mendukung cache. Hal ini memungkinkan respons dari API disimpan pada cache di lokal server. Ketika fungsi yang sama dipanggil untuk kesekian kali, aplikasi tidak perlu memanggil secara langsung ke API Moota.
 
 Untuk mengaktifkan fitur cache, kamu hanya perlu menambahkan metode `cache()` pada pemanggilan metode tertentu. Sebagai contoh:
 

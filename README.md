@@ -24,7 +24,7 @@ Tambahkan package Moota untuk Laravel dengan menjalankan perintah berikut:
 composer require yugo/moota -vvv
 ```
 
-Laravel memiliki fitur (Package Discovery)[https://laravel.com/docs/5.7/packages#package-discovery], yang memungkinkan package didaftarkan secara otomatis. Jika kamu mendapati pesan kesalagan class Moota tidak ditemukan, daftarkan provider dan facade Moota secara manual pada berkas `config/app.php`.
+Laravel memiliki fitur [Package Discovery](https://laravel.com/docs/5.7/packages#package-discovery), yang memungkinkan package didaftarkan secara otomatis. Jika kamu mendapati pesan kesalagan class Moota tidak ditemukan, daftarkan provider dan facade Moota secara manual pada berkas `config/app.php`.
 
 ```
 /*

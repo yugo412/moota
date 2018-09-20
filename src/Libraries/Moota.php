@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * ------------------------------------------------------------------------------------------------------
+ * Unofficial Moota.co package for Laravel framework
+ * ------------------------------------------------------------------------------------------------------
+ * 
+ * Moota.co adalah layanan untuk mengelola mutasi bank dalam satu dasbor dan cek transaksi secara otomatis.
+ * Moota.co mendukung berbagai bank lokal seperti Mandiri, BCA, BNI, Bank Muamalat, dan Bank BRI.
+ * 
+ * Package (tidak resmi) ini ditujukan pada framework Laravel untuk kemudahan penggunaan layanan
+ * yang disediakan oleh API Moota.co.
+ */
+
 namespace Yugo\Moota\Libraries;
 
 use GuzzleHttp\Client;
@@ -37,8 +49,8 @@ class Moota
 
     public function __construct()
     {        
-        abort_if(empty(config('moota.host')), 500, __('moota::moota.no_host'));
-        abort_if(empty(config('moota.token')), 500, __('moota::moota.no_token'));
+        abort_if(empty(config('moota.host')), 500, trans('moota::moota.no_host'));
+        abort_if(empty(config('moota.token')), 500, trans('moota::moota.no_token'));
 
         $this->http = new Client([
             'base_uri' => config('moota.host'),
@@ -148,8 +160,8 @@ class Moota
      */
     public function latest(int $limit = 20): Collection
     {
-        abort_if($limit < 10, 500, __('moota::moota.min_limit'));
-        abort_if($limit > 20, 500, __('moota::moota.max_limit.'));
+        abort_if($limit < 10, 500, trans('moota::moota.min_limit'));
+        abort_if($limit > 20, 500, trans('moota::moota.max_limit.'));
 
         $response = $this->http->get("bank/{$this->bankId}/mutation/recent/$limit", [
             'headers' => $this->headers,

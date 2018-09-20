@@ -24,7 +24,7 @@ class Moota
      *
      * @var Client
      */
-    private $client;
+    private $http;
 
     /**
      * Default headers for all request.

@@ -24,7 +24,7 @@
                 "Yugo\\Moota\\Providers\\MootaServiceProvider"
             ],
             "aliases": {
-                "Moota": "Yugo\\Mota\\Facades\\Mota"
+                "Moota": "Yugo\\Moota\\Facades\\Moota"
             }
         }
     },
